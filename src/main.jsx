@@ -7,7 +7,6 @@ import './index.css';
 import ResourceDetails from './Components/Resources';
 
 studio.extend(extension);
-studio.initialize();
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
