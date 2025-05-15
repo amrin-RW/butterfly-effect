@@ -1,4 +1,3 @@
-
 import { getProject } from '@theatre/core';
 import { Canvas, useThree } from '@react-three/fiber';
 import {
@@ -57,26 +56,14 @@ function Controls() {
   );
 }
 
-// Positions for placing the man models in a circle
-const getPositions = (count) => {
-  const positions = [];
-  const radius = 80;
-  
-  for (let i = 0; i < count; i++) {
-    const angle = (i / count) * Math.PI * 2;
-    positions.push({
-      position: [
-        Math.sin(angle) * radius,
-        5,
-        Math.cos(angle) * radius
-      ],
-      rotation: [0, -angle + Math.PI, 0],
-      scale: [20, 20, 20]
-    });
-  }
-  
-  return positions;
-};
+// Predefined positions for the man models
+const predefinedPositions = [
+  { position: [-75, 5, 80], rotation: [0, 5, 0], scale: [20, 20, 20] },
+  { position: [-63, 5, -66], rotation: [0, 0, 0], scale: [20, 20, 20] },
+  { position: [50, 5, -75], rotation: [0, -5, 0], scale: [20, 20, 20] },
+  { position: [40, 5, 92], rotation: [0, -8.5, 0], scale: [20, 20, 20] },
+  { position: [0, 5, -110], rotation: [0, 0, 0], scale: [20, 20, 20] }
+];
 
 export default function App() {
   const sheet = getProject('Conference', { state: stateTheatre }).sheet('Scene');
@@ -146,12 +133,12 @@ export default function App() {
       });
   }, []);
   
-  // Calculate positions for models based on currently selected project
+  // Use predefined positions for models based on currently selected project
   const modelPositions = useMemo(() => {
     if (!selected || !projectResources[selected]) return [];
     
-    const resourceCount = projectResources[selected].length;
-    return getPositions(resourceCount);
+    // Return the predefined positions, limited to the number of resources
+    return predefinedPositions.slice(0, Math.min(projectResources[selected].length, predefinedPositions.length));
   }, [selected, projectResources]);
 
   if (loading) return <div style={{ color: 'white', padding: '20px' }}>Loading...</div>;
@@ -177,13 +164,12 @@ export default function App() {
         >
           {Object.keys(projectResources).map(key => (
             <option key={key} value={key}>
-              {key} ({projectResources[key].length} resources)
+              {key}
             </option>
           ))}
         </select>
       </div>
-      
-  
+
       
       <Canvas camera={{ near: 1, far: 1000 }}>
         <SheetProvider sheet={sheet}>
